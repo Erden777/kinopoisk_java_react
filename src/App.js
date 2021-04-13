@@ -1,24 +1,76 @@
-import logo from './logo.svg';
 import './App.css';
+import Button from '@material-ui/core/Button';
+import Home from './Components/Home/Home'
+import Header from './Components/Header/Header';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Route, Switch } from 'react-router';
+import Admin from './Components/AdminPage/Dashboard';
+import Main from './Components/Main/Main';
+import Login from './Components/LoginForm/SignIn';
+import Register from './Components/Register/Register';
 
+import { Container } from "react-bootstrap";
+import Footer from './Components/Footer/Footer';
+import Profile from './Components/Profile/Profile'
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Switch>
+        <Route exact path="/admin">
+            <Admin/>
+        </Route>
+
+        <Route exact path="/admin/users">
+            <Admin/>
+        </Route>
+
+        <Route exact path="/admin/movies">
+            <Admin/>
+        </Route>
+
+        <Route exact path="/admin/genre">
+            <Admin/>
+        </Route>
+        <Route exact path="/admin/actors">
+            <Admin/>
+        </Route>
+
+        <Route exact path="/admin/edit/user">
+                    <Admin/>
+                </Route>
+
+      </Switch>
+        <Switch>
+            <Route exact path="/">
+            <Header />
+               <Container style={{minHeight:"85vh"}}>
+                <Main/>
+                </Container>
+              </Route>
+
+              <Route exact path="/login">
+              <Header />
+              <Container style={{minHeight:"85vh"}}>
+                <Login/>
+                </Container>
+              </Route>
+
+              <Route exact path="/register">
+              <Header />
+              <Container style={{minHeight:"85vh"}}>
+                <Register/>
+                </Container>
+              </Route>
+
+              <Route exact path="/profile">
+              <Header />
+              <Container style={{minHeight:"85vh"}}>
+                <Profile/>
+                </Container>
+              </Route>
+        </Switch>
+      <Footer/>
+    </>
   );
 }
 
