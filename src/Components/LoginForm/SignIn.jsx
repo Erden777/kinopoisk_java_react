@@ -12,6 +12,10 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { useState } from "react";
+import {useCookies} from 'react-cookie';
+import { AuthContext, UserDataContext } from "../../App";
+import { useEffect, useContext } from "react";
 
 function Copyright() {
   return (
@@ -46,8 +50,53 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SignIn() {
+export default function SignIn(){
   const classes = useStyles();
+  const [cookieJWT, setCookieJWT, removeCookieJWT] = useCookies(['jwt']);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const {userData, setuserData} = useContext(UserDataContext)
+
+
+
+  const handleEmailChange = event =>{
+    setEmail(event.target.value);
+  }
+
+  const handlePasswordChange = event =>{
+      setPassword(event.target.value);
+  }
+
+  const handleSubmit = event =>{
+      const inputData = {email, password};
+      console.log(inputData)
+      auth(inputData);
+      event.preventDefault();
+  }
+
+  async function auth(data){
+    console.log(data)
+    const response = await fetch("http://localhost:8000/auth", {
+        method: "POST",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        redirect: "follow",
+        referrerPolicy: "no-referrer",
+        body: JSON.stringify(data)
+      });
+
+    if(response.status==200){
+        let jwt = await response.json();
+        setCookieJWT('jwt', jwt);
+        window.location.replace("/");
+    }else{
+        alert("Wrong login or password");
+    }
+}
 
   return (
     <Container component="main" maxWidth="xs">
@@ -59,7 +108,7 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -70,16 +119,21 @@ export default function SignIn() {
             name="email"
             autoComplete="email"
             autoFocus
+            onChange={handleEmailChange}
+            value= {email}
           />
           <TextField
             variant="outlined"
             margin="normal"
             required
             fullWidth
+            autoFocus
             name="password"
             label="Password"
             type="password"
             id="password"
+            onChange={handlePasswordChange} 
+            value= {password}
             autoComplete="current-password"
           />
           <FormControlLabel

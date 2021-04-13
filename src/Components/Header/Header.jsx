@@ -1,9 +1,20 @@
 import React from "react";
 import {FormControl, Form, Button, DropdownButton, Dropdown } from "react-bootstrap";
-// import { Link, NavLink } from "react-router-dom";
+import { AuthContext, UserDataContext } from "../../App";
+import {useCookies} from 'react-cookie';
+import { useState, useEffect, useContext } from "react";
 
-function Header(props)
-{
+
+function Header(props){
+
+    const {cookieJWT, removeCookieJWT} =  useContext(AuthContext);
+    const {userData, setuserData} = useContext(UserDataContext)
+
+    const handleLogoutClick = event =>{
+        removeCookieJWT('jwt');
+        window.location.replace("/login");
+    }
+
     return (
         <div className="header">
             <div className="container fluid headerButtons">
@@ -25,8 +36,18 @@ function Header(props)
                     </div>
                     <div className="col-4">
                         <div className="navtext">
-                            <a href="#" className="ml-2">Login</a>
-                            <a href="#" className="mr-auto">Registration</a>
+                            { userData['full_name'] !== undefined ?
+                                <>
+                                <a href="#" className="ml-2"  onClick={handleLogoutClick}>Logout</a>
+                                    <a href="#" className="ml-2">{userData.full_name}</a>
+                                    
+                                </>
+                            :
+                                <>
+                                    <a href="/login" className="ml-2">Login</a>
+                                    <a href="/register" className="mr-auto">Registration</a>
+                                </>
+                            }
                         </div>
                     </div>
             </div>
@@ -35,6 +56,5 @@ function Header(props)
        
     )
 }
-
 
 export default Header;

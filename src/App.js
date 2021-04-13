@@ -8,13 +8,22 @@ import Admin from './Components/AdminPage/Dashboard';
 import Main from './Components/Main/Main';
 import Login from './Components/LoginForm/SignIn';
 import Register from './Components/Register/Register';
-
+import {createContext, useState} from "react";
 import { Container } from "react-bootstrap";
 import Footer from './Components/Footer/Footer';
 import Profile from './Components/Profile/Profile'
+import { useCookies } from "react-cookie";
+
+
+export const AuthContext = createContext();
+export const UserDataContext = createContext();
+
 function App() {
+  const [cookieJWT, setCookieJWT, removeCookieJWT] = useCookies(['jwt']);
+  const [userData, setuserData] = useState([]);
   return (
-    <>
+    <AuthContext.Provider value={{cookieJWT, setCookieJWT, removeCookieJWT}}>
+    <UserDataContext.Provider value={{userData, setuserData}}>
       <Switch>
         <Route exact path="/admin">
             <Admin/>
@@ -36,15 +45,15 @@ function App() {
         </Route>
 
         <Route exact path="/admin/edit/user">
-                    <Admin/>
-                </Route>
+            <Admin/>
+        </Route>
 
       </Switch>
         <Switch>
             <Route exact path="/">
-            <Header />
+            <Header  />
                <Container style={{minHeight:"85vh"}}>
-                <Main/>
+                <Main />
                 </Container>
               </Route>
 
@@ -70,7 +79,8 @@ function App() {
               </Route>
         </Switch>
       <Footer/>
-    </>
+    </UserDataContext.Provider>
+    </AuthContext.Provider>
   );
 }
 

@@ -16,9 +16,38 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Button from '@material-ui/core/Button';
+import { AuthContext, UserDataContext } from "../../App";
+import {useCookies} from 'react-cookie';
+import { useEffect, useContext } from "react";
 
 function Main(props){
+  const {cookieJWT} =  useContext(AuthContext);
+  const {userData, setuserData} = useContext(UserDataContext)
 
+    useEffect(() => {
+      console.log(cookieJWT)
+      if (cookieJWT['jwt']!==undefined){
+        console.log(cookieJWT)
+        test(props)
+      }
+  }, []);
+  
+  async function test(props){   
+    console.log(cookieJWT['jwt'])
+    const bearer = "Bearer "+cookieJWT['jwt'].jwtToken;
+    const response = await fetch("http://localhost:8000/api/profile", {
+        method:'GET',
+        headers: {
+        "Content-Type": "application/json",
+        "Authorization": bearer
+        }
+    });
+        if(response.status==200){
+            let res = await response.json();
+            console.log(res);
+            setuserData(res);
+        }    
+    }
     const settings = {
       dots: true,
       infinite: true,

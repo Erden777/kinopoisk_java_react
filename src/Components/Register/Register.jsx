@@ -12,6 +12,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
+import { useState } from "react";
+import {useCookies} from 'react-cookie';
 
 function Copyright() {
   return (
@@ -49,6 +51,60 @@ const useStyles = makeStyles((theme) => ({
 export default function Register() {
   const classes = useStyles();
 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [repassword, setRepassword] = useState("");
+  const [full_name, setFull_name] = useState("");
+  const [cookieJWT, setCookieJWT, removeCookieJWT] = useCookies(['jwt']);
+
+
+  const handleEmailChange = event =>{
+    setEmail(event.target.value);
+    }
+
+  const handleFullnameChange = event =>{
+      setFull_name(event.target.value);
+  }
+
+  const handleRepasswordChange = event =>{
+      setRepassword(event.target.value);
+  }
+  const handlePasswordChange = event =>{
+      setPassword(event.target.value);
+  }
+
+  const handleSubmit = event =>{
+
+      const inputData = {email, password, full_name};
+      if(repassword===password){
+          register(inputData);
+         
+      }else{
+          alert('enter correct repassword')
+      }
+      event.preventDefault();
+  }
+
+  async function register(data){
+    const response = await fetch("http://localhost:8000/register", {
+        method: "POST",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        redirect: "follow",
+        referrerPolicy: "no-referrer",
+        body: JSON.stringify(data)
+      });
+      
+      if(response.status === 200){
+          let jwt = await response.json();
+          setCookieJWT('jwt', jwt);
+      }
+}
+  
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -59,7 +115,7 @@ export default function Register() {
         <Typography component="h1" variant="h5">
           Sign Up
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} noValidate  onSubmit={handleSubmit}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -69,6 +125,7 @@ export default function Register() {
             label="Email Address"
             name="email"
             autoComplete="email"
+            onChange={handleEmailChange}
             autoFocus
           />
 
@@ -79,8 +136,9 @@ export default function Register() {
             fullWidth
             id="text"
             label="Full Name"
-            name="fullname"
+            name="full_name"
             autoComplete="text"
+            onChange={handleFullnameChange}
             autoFocus
           />
           <TextField
@@ -93,17 +151,19 @@ export default function Register() {
             type="password"
             id="password"
             autoComplete="current-password"
+            onChange={handlePasswordChange}
           />
           <TextField
             variant="outlined"
             margin="normal"
             required
             fullWidth
-            name="re-password"
+            name="repassword"
             label="Re-Password"
             type="password"
             id="password"
             autoComplete="current-password"
+            onChange={handleRepasswordChange}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
