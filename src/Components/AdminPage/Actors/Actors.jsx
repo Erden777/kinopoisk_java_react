@@ -10,7 +10,8 @@ import Title from '../Title';
 import Button from '@material-ui/core/Button';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
-
+import { useEffect, useContext, useState } from "react";
+import { AuthContext, UserDataContext } from "../../../App";
 // Generate Order Data
 function createData(id, name,date, country, height, amount) {
   return {id, name, date, country, height, amount };
@@ -36,27 +37,45 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Actors() {
   const classes = useStyles();
-  return (
-    <React.Fragment>
-      <Title>Actors</Title>
-      <Table size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell>Full name</TableCell>
-            <TableCell>Date of Birth</TableCell>
-            <TableCell>Country</TableCell>
-            <TableCell>Height</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow key={row.id}>
-                
-              <TableCell>{row.name}</TableCell>
-              <TableCell>{row.date}</TableCell>
-              <TableCell>{row.country}</TableCell>
-              <TableCell>{row.height}</TableCell>
-              <TableCell>{row.amount}</TableCell>
+  const [actorlist, setactorlist] = useState([]);
+  const {cookieJWT} =  useContext(AuthContext);
+
+  async function loadCards(){
+        
+    const bearer = "Bearer "+cookieJWT['jwt'].jwtToken;
+    let response = await fetch("http://localhost:8000/api/actor/allActors", {
+        method:'GET',
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": bearer
+        }
+    });
+    let tabledata = await response.json();
+    console.log(tabledata)
+    setactorlist(tabledata);
+}
+  useEffect(()=>{
+      loadCards();
+  }, []);
+
+    return (
+      <React.Fragment>
+        <Title>Actors</Title>
+        <Table size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell>Full name</TableCell>
+              <TableCell>Date of Birth</TableCell>
+              <TableCell>Country</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {actorlist.map((row) => (
+              <TableRow key={row.id}>
+                  
+                <TableCell>{row.full_name}</TableCell>
+                <TableCell>{row.age}</TableCell>
+                <TableCell>{row.country.name}</TableCell>
               <TableCell align="right">
               <Button
                     type="submit"

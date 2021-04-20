@@ -58,12 +58,11 @@ export default function Profile() {
             <Card style={{ width: '18rem' }}  className={classes.paper}>
                 <Card.Img style={{height:200, width:200, marginTop:"20px"}} variant="top" src="https://i.pinimg.com/originals/51/f6/fb/51f6fb256629fc755b8870c801092942.png" />
                 <Card.Body>
-                    <Card.Title>Card Title</Card.Title>
+                    <Card.Title>Almaty IITU</Card.Title>
                     <Card.Text>
-                    Some quick example text to build on the card title and make up the bulk of
-                    the card's content.
+                   
                     </Card.Text>
-                    <Button variant="primary">Go somewhere</Button>
+                    <Button variant="primary">Updata image</Button>
                 </Card.Body>
             </Card>
             </div>
@@ -79,7 +78,7 @@ export default function Profile() {
                     fullWidth
                     id="email"
                     name="email"
-                    value="erden.aidynuly@gmail.com"
+                    value="almaty@gmail.com"
                     autoComplete="email"
                     autoFocus
                     aria-readonly
@@ -93,7 +92,7 @@ export default function Profile() {
                     fullWidth
                     id="text"
                     name="fullname"
-                    value="Erden Aidynuly"
+                    value="Almaty IITU"
                     autoComplete="text"
                     autoFocus
                 />
