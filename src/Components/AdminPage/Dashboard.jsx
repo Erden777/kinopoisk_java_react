@@ -23,6 +23,7 @@ import Orders from './Orders';
 import Footer from '../Footer/Footer';
 import Users from './Users/Users';
 import Actors from './Actors/Actors';
+import EditActor from './Actors/EditActors';
 import Movies from './Movies/Movies';
 import Genre from './Genre/Genre';
 import EditUser from './Users/EditUser'
@@ -188,12 +189,16 @@ export default function Dashboard() {
                     <Users/>
                 </Route>
 
-                <Route exact path="/admin/edit/user">
+                <Route exact path="/admin/users/:userId">
                     <EditUser/>
                 </Route>
 
                 <Route exact path="/admin/actors">
                     <Actors/>
+                </Route>
+
+                <Route exact path="/admin/actors/:actorId">
+                    <EditActor/>
                 </Route>
 
                 <Route exact path="/admin/movies">
@@ -203,9 +208,7 @@ export default function Dashboard() {
                 <Route exact path="/admin/genre">
                     <Genre/>
                 </Route>
-      </Switch>
-
-
+              </Switch>
               </Paper>
           </Grid>
           <Box pt={4}>

@@ -32,21 +32,35 @@ function App() {
         <Route exact path="/admin/users">
             <Admin/>
         </Route>
+        <Route exact path="/admin/users/userId">
+            <Admin/>
+        </Route>
 
         <Route exact path="/admin/movies">
             <Admin/>
         </Route>
+        <Route exact path="/admin/movies/:movieId">
+            <Admin/>
+        </Route>
+        
 
         <Route exact path="/admin/genre">
+            <Admin/>
+        </Route>
+
+        <Route exact path="/admin/genre/:genreId">
             <Admin/>
         </Route>
         <Route exact path="/admin/actors">
             <Admin/>
         </Route>
 
-        <Route exact path="/admin/edit/user">
+        <Route exact path="/admin/actors/:actorId">
             <Admin/>
         </Route>
+
+        
+
 
       </Switch>
         <Switch>
