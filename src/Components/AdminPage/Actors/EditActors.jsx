@@ -62,10 +62,35 @@ export default function EditActors() {
   const[id, setId] = useState(actorId);
   const[countryId, setcountryId] = useState("")
   const[countryName, setcountryName] = useState("")
+  const[fullname, setfullname] = useState("")
+  const[age, setAge] = useState("")
+  const[picture_url, setPicture_url] = useState("")
   const[data, setdata] = useState([]);
-  
+  const [ActorId, setActorId] = useState("");
   const [allCountries, setallCountries] = useState([]);
   const [cookieJWT, setCookieJWT, removeCookieJWT] = useCookies(["jwt"]);
+  const[newActor, setNewActor] = useState([])
+
+
+  const PrictureChange = (event) => {
+    setPicture_url(event.target.value);
+  };  
+
+  const fullnameChange = (event) => {
+    setfullname(event.target.value);
+  };  
+
+  const AgeChange = (event) => {
+    setAge(event.target.value);
+  };  
+
+  const SaveActorSubmit = event =>{
+    
+    const actor = {id:data['id'], full_name:fullname,picture_url: picture_url, age:age, country:countryId}
+    console.log(actor)
+    SaveActor(actor)
+    // loadCards()
+  };
 
   async function getActor(id){
     const bearer = "Bearer " + cookieJWT["jwt"].jwtToken;
@@ -80,6 +105,9 @@ export default function EditActors() {
     if(response.status==200){
         let actorData = await response.json();
         setdata(actorData);
+        setfullname(actorData.full_name)
+        setAge(actorData.age)
+        setPicture_url(actorData.picture_url)
         if (actorData.country != undefined && actorData.country['name'] !=undefined){
             setcountryName(actorData.country['name']);
             setcountryId(actorData.country['id']);
@@ -89,10 +117,45 @@ export default function EditActors() {
             setallCountries(actorData.all_countries);
         }
     }
+    setActorId("")
 }useEffect(()=>{
     getActor(id);
-
 }, []);
+
+async function SaveActor(data){
+  console.log(data, 'data')
+  const bearer = "Bearer " + cookieJWT["jwt"].jwtToken;
+  const response = await fetch("http://localhost:8000/api/actor/saveActor",{
+      method:"POST",
+      mode: "cors",
+      cache:"no-cache",
+      credentials:"same-origin",
+      headers:{
+          "Content-Type":"application/json",
+          Authorization: bearer,
+      },
+      redirect:"follow",
+      referrerPolicy:"no-referrer",
+      body: JSON.stringify(data)
+  });
+      let actorData = await response.json();
+      if(actorData.status==200){
+        let actorData = await response.json();
+        setdata(actorData);
+        setfullname(actorData.full_name)
+        setAge(actorData.age)
+        setPicture_url(actorData.picture_url)
+        if (actorData.country != undefined && actorData.country['name'] !=undefined){
+            setcountryName(actorData.country['name']);
+            setcountryId(actorData.country['id']);
+        }
+        if (actorData.all_countries != undefined ){
+            setallCountries(actorData.all_countries);
+        }
+    }
+      setActorId(actorData.id);
+    }useEffect(()=>{
+  }, [actorId]); 
 
 const handleChange = (event) => {
     setcountryId(event.target.value);
@@ -124,7 +187,8 @@ const handleChange = (event) => {
                     fullWidth
                     id="text"
                     name="fullname"
-                    value={data['full_name']}
+                    onChange={fullnameChange}
+                    value={fullname}
                     autoComplete="text"
                     autoFocus
                 />
@@ -135,7 +199,8 @@ const handleChange = (event) => {
                     fullWidth
                     label="Age"
                     type="text"
-                    value={data['age']}
+                    value={age}
+                    onChange={AgeChange}
                     className={classes.textField}
                     InputLabelProps={{
                     shrink: true,
@@ -168,10 +233,9 @@ const handleChange = (event) => {
             </FormControl>
 
                 <Button
-                    type="submit"
                     variant="contained"
                     color="primary"
-                    className={classes.submit}
+                    onClick={SaveActorSubmit}
                 >
                     Save
                 </Button>

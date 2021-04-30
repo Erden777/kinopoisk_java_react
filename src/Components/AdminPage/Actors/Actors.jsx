@@ -24,6 +24,9 @@ import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import Switch from '@material-ui/core/Switch';
 import {useCookies} from 'react-cookie';
+import AddBoxIcon from '@material-ui/icons/AddBox';
+import TextField from '@material-ui/core/TextField';
+import {Select as MuiSelect} from "@material-ui/core";
 
 // Generate Order Data
 function createData(id, name,date, country, height, amount) {
@@ -60,19 +63,52 @@ export default function Actors() {
   const [actorlist, setactorlist] = useState([]);
   
   const [open, setOpen] = React.useState(false);
+  const [openAdd, setOpenAdd] = React.useState(false);
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState('sm');
   const [actor, setActor] = useState({});
   const [cookieJWT, setCookieJWT, removeCookieJWT] = useCookies(["jwt"]);
   const [ActorId, setActorId] = useState("");
+  const [allCountries, setallCountries] = useState([]);
+  const[countryId, setcountryId] = useState("")
+  const[fullname, setfullname] = useState("")
+  const[age, setAge] = useState("")
+  const[picture_url, setPicture_url] = useState("")
+  const[newActor, setNewActor] = useState([])
+  const PrictureChange = (event) => {
+    setPicture_url(event.target.value);
+  };  
+
+  const fullnameChange = (event) => {
+    setfullname(event.target.value);
+  };  
+
+  const AgeChange = (event) => {
+    setAge(event.target.value);
+  };  
+
   const handleClickOpen = (row) => {
     setActor(row);
     setOpen(true);
   };
 
+  const handleChange = (event) => {
+    setcountryId(event.target.value);
+  };
+
+  const handleClickOpenAdd = (row) => {
+    // setActor(row);
+    setOpenAdd(true);
+  };
+
   const handleClose = () => {
     setOpen(false);
   };
+
+  const handleCloseAdd = () => {
+    setOpenAdd(false);
+  };
+
 
   const handleMaxWidthChange = (event) => {
     setMaxWidth(event.target.value);
@@ -88,7 +124,40 @@ export default function Actors() {
     setOpen(false);
     // loadCards()
   }
+
+  const SaveActorSubmit = event =>{
+    const data = {full_name:fullname,picture_url: picture_url, age:age, country:countryId}
+    console.log(data)
+    SaveActor(data)
+    setfullname("")
+    setPicture_url("")
+    setAge("")
+    setOpenAdd(false);
+    // loadCards()
+  }
   
+  async function SaveActor(data){
+    console.log(data, 'data')
+    const bearer = "Bearer " + cookieJWT["jwt"].jwtToken;
+    const response = await fetch("http://localhost:8000/api/actor/saveActor",{
+        method:"POST",
+        mode: "cors",
+        cache:"no-cache",
+        credentials:"same-origin",
+        headers:{
+            "Content-Type":"application/json",
+            Authorization: bearer,
+        },
+        redirect:"follow",
+        referrerPolicy:"no-referrer",
+        body: JSON.stringify(data)
+    });
+    
+    let res = await response.json();
+    setActorId(res.id);
+} useEffect(()=>{
+    }, [newActor]);
+
 
   async function DeleteActor(data) {
     const bearer = "Bearer " + cookieJWT["jwt"].jwtToken;
@@ -109,6 +178,7 @@ export default function Actors() {
     setActorId(delData.id);
   }
 
+
   async function loadCards(){
     const bearer = "Bearer "+cookieJWT['jwt'].jwtToken;
     let response = await fetch("http://localhost:8000/api/actor/allActors", {
@@ -125,12 +195,34 @@ export default function Actors() {
 }
   useEffect(()=>{
       loadCards();
+      getCountries()
   }, [ActorId]);
+
+
+  async function getCountries(){
+    const bearer = "Bearer " + cookieJWT["jwt"].jwtToken;
+    let response = await fetch("http://localhost:8000/api/allcountries/",
+    {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: bearer,
+        },
+      });
+    if(response.status==200){
+        let countries = await response.json();
+        console.log(countries)
+        if (countries != undefined ){
+            setallCountries(countries);
+        }
+    }
+}
 
     return (
       <>
       <React.Fragment>
         <Title>Actors</Title>
+        
         <Table size="small">
           <TableHead>
             <TableRow>
@@ -171,13 +263,14 @@ export default function Actors() {
           ))}
         </TableBody>
       </Table>
-      <div className={classes.seeMore}>
-        <Link color="primary" href="#" onClick={preventDefault}>
-          See more orders
-        </Link>
-      </div>
+      
     </React.Fragment>
-  
+    <Button  variant="contained"
+                  color="primary"
+                  className={classes.submit} style={{"marginTop":"40px"}}
+                  onClick={() => {handleClickOpenAdd()}}>
+        <AddBoxIcon />
+        </Button>
   <React.Fragment>
       <Dialog
         fullWidth={fullWidth}
@@ -203,6 +296,97 @@ export default function Actors() {
         </DialogActions>
       </Dialog>
     </React.Fragment>
+
+    <React.Fragment>
+      <Dialog
+        fullWidth={fullWidth}
+        maxWidth={maxWidth}
+        open={openAdd}
+        onClose={handleCloseAdd}
+        aria-labelledby="max-width-dialog-title"
+      >
+        <DialogTitle id="max-width-dialog-title">Add Actor</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+                
+                <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    label="Full name"
+                    id="text"
+                    name="fullname"
+                    onChange={fullnameChange}
+                    value={fullname}
+                    autoComplete="text"
+                    autoFocus
+                />
+                <TextField
+                    variant="outlined"
+                    margin="normal"
+                    required
+                    fullWidth
+                    id="text"
+                    label="Picture URL"
+                    name="picture_url"
+                    value={picture_url}
+                    onChange={PrictureChange}
+                    autoComplete="text"
+                    autoFocus
+                />
+              
+                <TextField
+                    id="date"
+                    variant="outlined"
+                    margin="normal"
+                    fullWidth
+                    label="Age"
+                    type="text"
+                    value={age}
+                    onChange={AgeChange}
+                    className={classes.textField}
+                    InputLabelProps={{
+                    shrink: true,
+                    }}
+                />
+                
+        <FormControl variant="outlined"
+        className={classes.formControl}
+        fullWidth
+        >
+              <InputLabel id="demo-simple-select-outlined-label">
+                Country
+              </InputLabel>
+              <MuiSelect
+                labelId="demo-simple-select-outlined-label"
+                id="demo-simple-select-outlined"
+                value={countryId}
+                onChange={handleChange}
+                label="country"
+              >
+                {allCountries.map((item) => (
+                  <MenuItem key={item.id} value={item}>
+                    {item.name}
+                  </MenuItem>
+                ))}
+              </MuiSelect>
+            </FormControl>
+               
+          </DialogContentText>
+          
+        </DialogContent>
+        <DialogActions>
+        <Button onClick={SaveActorSubmit} color="secondary">
+            Save
+          </Button>
+          <Button onClick={handleCloseAdd} color="primary">
+            Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </React.Fragment>
+
     </>
-);
-              }
+  );
+}
