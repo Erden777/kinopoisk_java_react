@@ -93,6 +93,7 @@ export default function EditActors() {
   };
 
   async function getActor(id){
+    console.log("Get genre")
     const bearer = "Bearer " + cookieJWT["jwt"].jwtToken;
     let response = await fetch("http://localhost:8000/api/actor/getActor/"+id,
     {

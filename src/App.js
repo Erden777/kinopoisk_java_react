@@ -48,7 +48,7 @@ function App() {
             <Admin/>
         </Route>
 
-        <Route exact path="/admin/genre/:genreId">
+        <Route exact path="/admin/genre/:genreID">
             <Admin/>
         </Route>
         <Route exact path="/admin/actors">

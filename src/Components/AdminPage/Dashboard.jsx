@@ -28,6 +28,7 @@ import Movies from './Movies/Movies';
 import Genre from './Genre/Genre';
 import EditUser from './Users/EditUser'
 import { Route, Switch } from 'react-router';
+import EditGenre from './Genre/EditGenre';
 
 
 function Copyright() {
@@ -207,6 +208,10 @@ export default function Dashboard() {
 
                 <Route exact path="/admin/genre">
                     <Genre/>
+                </Route>
+
+                <Route exact path="/admin/genre/:genreID">
+                    <EditGenre/>
                 </Route>
               </Switch>
               </Paper>
