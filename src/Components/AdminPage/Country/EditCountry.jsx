@@ -56,10 +56,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function EditGenre() {
-  let {genreID} = useParams();
+export default function EditCountry() {
+  let {countryID} = useParams();
   const classes = useStyles();
-  const[id, setId] = useState(genreID);
+  const[id, setId] = useState(countryID);
   const[name, setname] = useState("")
   const[data, setdata] = useState([]);
   const [genreId, setGenreId] = useState("");
@@ -80,7 +80,7 @@ export default function EditGenre() {
 
   async function getGenre(id){
     const bearer = "Bearer " + cookieJWT["jwt"].jwtToken;
-    let response = await fetch("http://localhost:8000/genre/getGenre/"+id,
+    let response = await fetch("http://localhost:8000/country/getCountry/"+id,
     {
         method: "GET",
         headers: {
@@ -102,7 +102,7 @@ export default function EditGenre() {
 async function SaveGenre(data){
   console.log(data, 'data')
   const bearer = "Bearer " + cookieJWT["jwt"].jwtToken;
-  const response = await fetch("http://localhost:8000/genre/saveGenre",{
+  const response = await fetch("http://localhost:8000/country/saveActor",{
       method:"POST",
       mode: "cors",
       cache:"no-cache",

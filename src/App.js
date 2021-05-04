@@ -43,7 +43,6 @@ function App() {
             <Admin/>
         </Route>
         
-
         <Route exact path="/admin/genre">
             <Admin/>
         </Route>
@@ -59,10 +58,16 @@ function App() {
             <Admin/>
         </Route>
 
-        
+        <Route exact path="/admin/country">
+            <Admin/>
+        </Route>
 
+        <Route exact path="/admin/country/:countryID">
+            <Admin/>
+        </Route>
 
       </Switch>
+
         <Switch>
             <Route exact path="/">
             <Header  />

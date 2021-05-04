@@ -26,9 +26,12 @@ import Actors from './Actors/Actors';
 import EditActor from './Actors/EditActors';
 import Movies from './Movies/Movies';
 import Genre from './Genre/Genre';
+import Country from './Country/Country';
 import EditUser from './Users/EditUser'
 import { Route, Switch } from 'react-router';
 import EditGenre from './Genre/EditGenre';
+import EditCountry from './Country/EditCountry';
+import EditMovie from './Movies/EditMovie';
 
 
 function Copyright() {
@@ -205,6 +208,9 @@ export default function Dashboard() {
                 <Route exact path="/admin/movies">
                     <Movies/>
                 </Route>
+                <Route exact path="/admin/movies/:movieId">
+                    <EditMovie/>
+                </Route>
 
                 <Route exact path="/admin/genre">
                     <Genre/>
@@ -212,6 +218,14 @@ export default function Dashboard() {
 
                 <Route exact path="/admin/genre/:genreID">
                     <EditGenre/>
+                </Route>
+
+                <Route exact path="/admin/country">
+                    <Country/>
+                </Route>
+
+                <Route exact path="/admin/country/:countryID">
+                    <EditCountry/>
                 </Route>
               </Switch>
               </Paper>

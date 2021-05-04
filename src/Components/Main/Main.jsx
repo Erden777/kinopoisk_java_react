@@ -129,16 +129,14 @@ function Main(props){
                     </Card>
             </div>
             <div className="col-md-10">
-                    <div className="col-md-9">
                         <Player
                             playsInline
                             poster="/assets/poster.png"
-                            width="20"
-                            height="20"
+                            height="10"
+                            width="90"
                             src="https://media.w3.org/2010/05/sintel/trailer_hd.mp4"
                             />
                     
-                </div>
 
                 <h2 className="mt-5 ml-2 bold" style={{fontWeight:"bold"}}>Popular movies</h2>
                 <Slider {...settings}>

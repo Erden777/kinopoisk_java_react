@@ -39,6 +39,14 @@ export const mainListItems = (
       <ListItemText primary="Actors" />
     </ListItem>
     </Link>
+    <Link to="/admin/country" style={{textDecoration:"none", color:"black"}}>
+    <ListItem button>
+      <ListItemIcon>
+        <AssignmentIcon />
+      </ListItemIcon>
+      <ListItemText primary="Countries" />
+    </ListItem>
+    </Link>
 
     <Link to="/admin/genre" style={{textDecoration:"none", color:"black"}}>
     <ListItem button>
