@@ -13,6 +13,7 @@ import { Container } from "react-bootstrap";
 import Footer from './Components/Footer/Footer';
 import Profile from './Components/Profile/Profile'
 import { useCookies } from "react-cookie";
+import MovieDetails from './Components/Main/MovieDetails';
 
 
 export const AuthContext = createContext();
@@ -73,6 +74,13 @@ function App() {
             <Header  />
                <Container style={{minHeight:"85vh"}}>
                 <Main />
+                </Container>
+              </Route>
+
+              <Route exact path="/movie/:MovieId">
+            <Header  />
+               <Container style={{minHeight:"85vh"}}>
+                <MovieDetails />
                 </Container>
               </Route>
 
