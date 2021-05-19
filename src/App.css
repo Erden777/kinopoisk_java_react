@@ -59,11 +59,110 @@
   margin-left: 2px;
 }
 
+.moviecard {
+  position: relative;
+  color:#000000;
+  text-decoration-color: black;
+}
+
+.moviecard:hover{
+  transform: scale(1.04);
+  color: orange;
+  text-decoration-color: red;
+  text-decoration: orange;
+}
+
+/* Bottom right text */
+.text-block1 {
+  position: absolute;
+  color: white;
+  margin-left: -5px;
+  margin-top: -5px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.moviecardtitle{
+  color: black;
+  text-decoration: none;
+}
+.moviecardtitle:hover{
+  color: orange;
+  text-decoration: none;
+}
+
+.moviecardundertitle{
+  color: lightgray;
+  font-size: small;
+}
+
 .mainbarTitle{
   color: white;
   font-weight: 850;
   font-size: 40px;
   padding: 55px;
+}
+
+.player-wrapper1{
+  position: relative;
+  background-color: #000000;
+}
+.playerTitle{
+  position: absolute;
+  padding: 55px;
+  color: white;
+}
+
+
+.underplayerTitle{
+  font-size: small;
+  opacity: 0.5;
+  color: white;
+}
+.actorName{
+  margin-top: -10px;
+  font-size: small;
+  color: white;
+}
+
+.director{
+  position: absolute;
+  padding: 135px 55px;
+  font-size: small;
+  opacity: 0.5;
+  color: white;
+}
+.directorName{
+  position: absolute;
+  padding: 135px 160px;
+  font-size: small;
+  color: white;
+}
+
+.watchWith{
+  font-size: x-large;
+  color:teal;
+
+}
+
+.video-wrapper{
+  opacity: 0.7;
+}
+
+
+.moviecardtitledark{
+  color: white;
+  text-decoration: none;
+}
+.moviecardtitledark:hover{
+  color: orange;
+  text-decoration: none;
+}
+
+.movieNewcard:hover{
+  color: orange;
+  opacity: 0.7;
+  text-decoration-color: red;
+  text-decoration: orange;
 }
 
 .App-link {
