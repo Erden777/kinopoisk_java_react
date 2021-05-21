@@ -237,6 +237,10 @@ export default function Movies() {
     setdescription("")
     setproducer("")
     setOpenAdd(false);
+    setPersonName([]);
+    setcountrylist([])
+                      
+  
     // loadCards()
   }
   

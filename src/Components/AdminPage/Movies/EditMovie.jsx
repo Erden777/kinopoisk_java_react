@@ -16,6 +16,7 @@ import {Card} from 'react-bootstrap'
 import Select from '@material-ui/core/Select'
 import {useCookies} from 'react-cookie';
 import { Link, NavLink, useParams} from "react-router-dom";
+import Rating from '@material-ui/lab/Rating';
 import {
     FormControl,
     InputLabel,
@@ -152,6 +153,7 @@ export default function EditMovie() {
   const [fullWidth, setFullWidth] = React.useState(true);
   const [maxWidth, setMaxWidth] = React.useState('sm');
   const [movie, setMovie] = useState({});
+  const [rating, setRating] = useState();
 
   const handleChange1 = (event) => {
     setPersonName(event.target.value);
@@ -164,6 +166,11 @@ export default function EditMovie() {
   const handleActorChange = (event) => {
     setActors(event.target.value);
   };
+
+  const RatingChange =(event)=>{
+    console.log(event.target.value)
+    setRating(event.target.value)
+  }
 
   const handleChangeMultiple = (event) => {
     const { options } = event.target;
@@ -251,7 +258,8 @@ export default function EditMovie() {
                     'income':income, 'small_picture': small_picture,
                     'large_picture': large_picture, 'picture_3': picture_3,
                     'url_video': url_video, 'country': countryId,
-                    'actors': actors, 'genres': personName, 'year':date
+                    'actors': actors, 'genres': personName, 'year':date,
+                    'rating':rating
                         }
     console.log(movie)
     SaveMovie(movie)
@@ -327,6 +335,8 @@ export default function EditMovie() {
         setsmall_picture(moviedata.small_picture)
         setpicture_3(moviedata.picture_3)
         seturl_video(moviedata.url_video)
+        console.log(moviedata.rating)
+        setRating(moviedata.rating)
 
         if (moviedata.country != undefined && moviedata.country['name'] !=undefined){
             setcountryName(moviedata.country['name']);
@@ -532,7 +542,10 @@ const handleChange = (event) => {
                     value={url_video}
                     autoComplete="text"
                   />
-
+                  <Box component="fieldset" mb={3} mt={3} borderColor="transparent">
+                    <Typography component="legend">Rating</Typography>
+                    <Rating name="customized-10" value={rating} onChange={RatingChange} max={10} size="large" />
+                  </Box>
                 <h4 style={{marginTop:"40px"}}>Country</h4>
                 
                 

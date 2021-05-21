@@ -1,7 +1,6 @@
 import React from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
@@ -20,7 +19,62 @@ import { AuthContext, UserDataContext } from "../../App";
 import ReactPlayer from 'react-player'
 import AddIcon from '@material-ui/icons/Add';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import { Card } from "react-bootstrap";
+import { Card, Table } from "react-bootstrap";
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+import Rating from '@material-ui/lab/Rating';
+import StarBorderIcon from '@material-ui/icons/StarBorder';
+import FavoriteIcon from '@material-ui/icons/Favorite';
+import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
+import SentimentDissatisfiedIcon from '@material-ui/icons/SentimentDissatisfied';
+import SentimentSatisfiedIcon from '@material-ui/icons/SentimentSatisfied';
+import SentimentSatisfiedAltIcon from '@material-ui/icons/SentimentSatisfiedAltOutlined';
+import SentimentVerySatisfiedIcon from '@material-ui/icons/SentimentVerySatisfied';
+import Slider from "react-slick";
+
+const StyledRating = withStyles({
+  iconFilled: {
+    color: '#ff6d75',
+  },
+  iconHover: {
+    color: '#ff3d47',
+  },
+})(Rating);
+
+const customIcons = {
+  1: {
+    icon: <SentimentVeryDissatisfiedIcon />,
+    label: 'Very Dissatisfied',
+  },
+  2: {
+    icon: <SentimentDissatisfiedIcon />,
+    label: 'Dissatisfied',
+  },
+  3: {
+    icon: <SentimentSatisfiedIcon />,
+    label: 'Neutral',
+  },
+  4: {
+    icon: <SentimentSatisfiedAltIcon />,
+    label: 'Satisfied',
+  },
+  5: {
+    icon: <SentimentVerySatisfiedIcon />,
+    label: 'Very Satisfied',
+  },
+};
+
+function IconContainer(props) {
+  const { value, ...other } = props;
+  return <span {...other}>{customIcons[value].icon}</span>;
+}
+
+IconContainer.propTypes = {
+  value: PropTypes.number.isRequired,
+};
+
+
+
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -64,11 +118,17 @@ export default function MovieDetails() {
           const [repassword, setRepassword] = useState("");
           const [full_name, setFull_name] = useState("");
           const [cookieJWT1, setCookieJWT, removeCookieJWT] = useCookies(['jwt']);
+          const [similar_products, setSimilarProducts] = useState([]);
+          const [actors, setActors] = useState([]);
+          const [data, setData] = useState([]);
+          const [movie_ratings, setMovie_rating] = useState([]);
+          const [search_result, setSearch_resutl] = useState([]);
 
           useEffect(() => {
             if (cookieJWT['jwt']!==undefined){
               console.log(cookieJWT)
               test();
+              getMovie(MovieId);
             }
         }, []);
 
@@ -88,6 +148,35 @@ export default function MovieDetails() {
                     console.log(res);
                     setuserData(res);
                 }    
+            }
+
+            async function getMovie(id){
+              console.log(id)
+              const bearer = "Bearer " + cookieJWT["jwt"].jwtToken;
+              let response = await fetch("http://localhost:8000/movie/getMovie/"+id,
+              {
+                  method: "GET",
+                  headers: {
+                    "Content-Type": "application/json",
+                    Authorization: bearer,
+                  },
+                });
+              if(response.status==200){
+                  let moviedata = await response.json();
+                  console.log(moviedata)
+                  if(moviedata?.similar_products){
+                    console.log(moviedata.rating_movies)
+                    setSimilarProducts(moviedata.similar_products);
+                  }
+                  if(moviedata.actors.length){
+                    setActors(moviedata.actors);
+                  }
+                  if(moviedata.rating_movies.length){
+                    console.log(moviedata.rating_movies)
+                    setMovie_rating(moviedata.rating_movies);
+                  }
+                  setData(moviedata);
+              }
             }
 
           const handleEmailChange = event =>{
@@ -111,7 +200,7 @@ export default function MovieDetails() {
                     if(repassword===password){
                           register(inputData);
                           }else{
-                                    alert('enter correct repassword')
+                              alert('enter correct repassword')
                           }
               event.preventDefault();
           }
@@ -135,13 +224,47 @@ export default function MovieDetails() {
                               setCookieJWT('jwt', jwt);
                     }
           }
+
+          const settings = {
+            dots: true,
+            infinite: false,
+            speed: 500,
+            slidesToShow: 4,
+            slidesToScroll: 4,
+            responsive: [
+              {
+                breakpoint: 1024,
+                settings: {
+                  slidesToShow: 4,
+                  slidesToScroll: 4,
+                  infinite: true,
+                  dots: true
+                }
+              },
+              {
+                breakpoint: 600,
+                settings: {
+                  slidesToShow: 2,
+                  slidesToScroll: 2,
+                  initialSlide: 2
+                }
+              },
+              {
+                breakpoint: 480,
+                settings: {
+                  slidesToShow: 1,
+                  slidesToScroll: 1
+                }
+              }
+            ]
+            };
   
       return (
       <Container component="main">
         <div className="row">
           <Card.Header className="col-4 card">
             <div className="col mt-5 mb-4">
-              <img height="420px" width="100%" src="https://kinopoisk-ru.clstorage.net/1Yp4O3234/01fb72SD/DXV37pRW8_bCn9kiu5SBHcKz5cLLdDNVLdrWUOlPpFhugUIEeWEIsWdNn4t65ZaeSTqtJyrcATzItTbnNARxN3wQo84Qx4cy59usp0qANP23UoQCi4RDQSkvIxQ46yEsD1B3oayT-7PkbwipGRcUnI8uySMrCdTpTLQTd_A00ONtZ4UvMlMAdCO9uAE5oLKvIUVkEEu0E0S5iiSBfv3EamshorQI8RiQdS6pOQkWxi9eT4iQDMv0ucx101UQZIbDT6f2W0OxYMbwbYmwmHNTrVF2BCF6hqMn-_j2I-6txDoLEpB326JokwQN-Fpql9XOfZwbQNzKF9sM9UPmYEQ2Qt6ENIsRkWJnIp64UrpCg3_AhUbBm4bDxYlLdxLeP1Y7GABRtxvRmADFTQlJeSeVrr_dmLJ_mGSavOSTBkCnxYDcpMV7o4LDFWCee2LbktL88WZ28ZsUMccqmyRz34z3SYrDQ9fY0Xpj5u9L2soG5rx9XsqzTulFCb6FwZQANSQgfNTmi2PjgTdDvjvxapCSTCAVpxOo9SNkCxtnQf8ehiuKg7HEuhLrY9buSFrqdtauXU7qcv2pNJvNVjKlIzaVUhwEVstBMYNG0c4JctgAga2wB6VA-rUDhotrRDPc3ETYOhDR1GuAaoPFbkp42JXkL78tyWKPCac4jReCFVN3VjKNlVV6McOQlTLeKkDZIyJeAddEAYiEs2W7GEUSDoxGqgoxMhYJQKlDdLyKWGi09H48nsly3_uEmf5lcyeyZ1SCrRVGmbHQMVTgnkkCygMgntMnRVOJZ9Gma-slkq8_Vlg4gMOEC1GoAIVfqSso9IeNPv05IO2rFpsuNnKmY_RFII5393qQ4GB2Ah4ZIgvDcM_j54aRmSUiZzmLJWLfbRTbW9NQdhrzWjGVD2lrOaSmXg5s-MIcmsbZD8fxF5HmlBBsR1X4cmChxtB--iDKwqEswiXGQmj30ibJuxTCvZ-0qijy8HWKAQpRJrwqCZll9Mw9vTiwHxmma58FQUYTRgYQvRUUSyMCcISCfetQmeEjXWFV5UIJNIHWyhjmEt7eVIu4MTCG21DaoHQveSlIZvfMr54qY3yoRzvNR-NHUCUXQiy2lGpAc2MnMLx6MUhwId1CxoYyCBQiVvkoFJEt_ubbmUOixPuzGRFn3avIqld0Dz7OGkAuyFQInTQwlmF3dwN_Ftf4QSISxLEt22HKYhG8E_SW4ZinYTYpaXWijj5WGYhzsIZ68pvhJ_9paEsE52-N71pwjMt2G4x1cpVSB_SyvraGeQDgUYUDj6oxacNRbAO19oI7BoA2mBj1czyPBIuacrHmCSD4sebPy4va9VZeLW6qAB8ZBsitV_LWARfkMG1FB8viIIF1gd66Y3qTYU1y5BVC6Wfjh_hrNlO9zxZpiWFwJQoyexMWz_oJ-JVEn57euOLuqyd7jydxx6Pk9nF-ZEf5grFgxYO9uDLaYnOu4AaU4as1EXQqu7SQzC_lC0vDkcZKkEjA9s_YG5iExs1vfeoBD0uUag1nsiWSRcWT33aUSVJjUObgXgtw66Ain_PmV1HZ1LBGmqpGU3yfBRsIQ0GU6BBbURSfiRpLR2ZefU1YwCxppQlshFAk8TYE0s7HFKmC8GBksR5YM4gSM00BdHUj60fgh9hq1LKujUbLCHBSJtuDi9Dl7Hs5GVeXnK-dKSA9KPdIvLWB9TAUBCD8VJSZ49DARpBeC2FIgVO8owSEAKrEkoYLmJYwPW13aCnTIYQLQCrC5O_Li5gXpm49D_jzDIgnKS8l4ufCRuTRbqd2unPgcGQyfrnxOTAir1LUNrJ7N0H2exr1Mq1thCk6sZIWWWMpUWaNCcn5NNX9T93qwG9KV1oOV2EUUfYFMP03NVuigRMnUN5JcLrTwy2ztybSSMajR8oq9nDMzvVpSULy9iiASwNG3AkZiqfn7C3sqEIsSjU6rsXAJaEXR2CuJVX7wJJg9sItiCF7kPDc80XFY0v2glS4eFRg7a9EuHvw0-Rp4vkTlU9pq0h0J5xd_osAbPnGKg_EchbzdpQy3tTUu0DTQxUgbMmBGOPhDbE1pvAKxeAmyCq04N3tFonb8eOFydM70uXdiNuYVBWvT6978u-rJesMNYFng3T1QP2XZlqQwlFFwg_psBnQs70CldVCu1RTxZgLJrDOv6ULORJwtPkBacBlL_nIeKdn7O3cOSI8uHZYrXSwx8AVVzPfdzaZkdAiliHtOeE4QELfQhY08eqnY0bb20ZBPK21a1sx4EXawKpQx1xYypoGpP097XgzTcsU-U8mEgeBxxTCP1Umq7Jwg5Vg3LsB6uADPXCkl1KbFjGk6cjnII0NNul40TOXqaBrUsfdO3tKhTefv3yY8c-qJemf5UEF8WbGQg8Hd_hR8FLFMG37wYrA8m4hNkVCyrYgNIl4hTI93PcKO9Nx5KtRWjNkHQgq66b3vE7Ni1HPmSa77tfSt5I3VJEetlRrEJDypOL82rKag1MMIWSF8eoFY9WZ2LZj7q02WWgS4GcYgOpwlvxY-2qX1p1s_PqQDsvFaCy0IyQDNKYSbQUl-QCCY9dyD6ogO8MibqDH5HPJ51OGmHhlMN9c1vgLQFHmKfEK0MSOifjbFUe-jVz6k_27dXk-xpD1oKXHUz62JImys2JFAR3IItiAQ0yDppcASLSAdYgJdmD_jfQaewNT9rrTmXHUngkZyyaWngyPm3Md-CRZTyQwFnAGNXHMlIeL4GKD1zOfulE4ExH80OXUQkjFQiSZynYxfw12qmkTEwRpQtnQ5L5L-7sXB52NL5iibplE2N7Vg7VARTawvucUGZCCQTUQnipwC5Pg_AEX1sHp9SJXiap1oP3cxzmLUqOmWQDIoScMCPsJdSVsfE_IwT9pFNjfBJFm88SUUlxlNftTgzKG8Jx6McrQwU7BV_ST61ZBtQtLFMDffLT76BCi1gjAqHLEvnvbi1bl7M0-iBFd2UdLnMVSs"/>
+              <img height="420px" width="100%" src={data.small_picture}/>
               <div className='player-wrapper' style={{height:"180px"}}>
               <ReactPlayer
                       config={{
@@ -153,15 +276,116 @@ export default function MovieDetails() {
                         }
                       }}
                         className='react-player video-wrapper mt-4'
-                        url='https://youtu.be/rVn2NCgCVLU'
+                        url={data?.url_video}
                         width='100%'
                         height='100%'
                       />
               </div>
           </div>
           </Card.Header>
-          <Card.Header className="col-8">This is</Card.Header>
+          
+          <Card.Header className="col-8 card">
+            <div className="row mt-5 ml-1">
+              <div className="col-8">
+                  <h3 style={{fontSize:"34px"}}><strong>{data.name}</strong></h3>
+                  <h5 className="mt-5"><strong>О фильме</strong></h5>
+                  <div style={{width: '100%' }}>
+                  <Table responsive>
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>Год производства</td>
+                      <td>2021</td>
+                    </tr>
+                    <tr>
+                      <td>Страна</td>
+                      <td>{data?.country?.name}</td>
+                    </tr>
+                    <tr>
+                      <td>Жанр</td>
+                      <td>{data?.genres?.length > 0  && data?.genres.map((row) => (row?.name+" "))}</td>
+                    </tr>
+                    <tr>
+                      <td>Режиссер</td>
+                      <td>{data?.director}</td>
+                    </tr>
+                    <tr>
+                      <td>Продюсер</td>
+                      <td>{data?.producer}</td>
+                    </tr>
+                   
+                    <tr>
+                      <td>Прибыл</td>
+                      <td>{data?.income}</td>
+                    </tr>
+
+                  </tbody>
+                </Table>
+                </div>
+                
+  
+              </div>
+              
+              <div className="col-3">
+                  <h3 style={{fontSize:"30px", marginTop:"30px"}}><strong>6.4</strong></h3>
+                  <h6 className="mt-3 mb-3"><strong>В главных ролях</strong></h6>
+                  { actors.length>0 && actors.map((row)=>
+                  <dl>{row?.full_name}</dl>
+                  )
+                  }
+              </div>
+              
+              </div>
+
+              <h5 className="mt-5"><strong>Кино по вашим предпочтениям</strong></h5>
+                <Slider {...settings}>
+                {
+                similar_products.length <= 0 && <h3>Пока никто  не добавил объявление <img src="https://freepikpsd.com/wp-content/uploads/2019/10/apple-emoji-png-pack-6-Free-PNG-Images-Transparent.png" width="50px" ></img></h3>
+                }
+                  { similar_products.length>2 && similar_products.map((row) => (
+                    <div className="p-2 moviecard">
+                      {row.rating <= 7 && row.rating >4 &&
+                      <p className="text-block1" style={{backgroundColor:"orange"}}>{row.rating}</p>
+                      }
+                      { row.rating > 7 &&
+                        <p className="text-block1" style={{backgroundColor:"green"}}>{row.rating}</p>
+                      }
+                      {
+                        row.rating <= 4 &&
+                        <p className="text-block1" style={{backgroundColor:"red"}}>{row.rating}</p>
+                      }
+                        <img height="200px" width="100%" src={row.small_picture} />
+                        <a  href={`/movie/${row.id}`}  className="mt-2 moviecardtitle">{row.name}</a>
+                        <p className="moviecardundertitle">{row?.genres[0]?.name}</p>
+                    </div>
+                  ))
+                }
+                </Slider>
+
+              <div>
+          
+          </div>
+
+          </Card.Header>
+
+          <Card.Header className="col">
+            <h4 className="mt-3 mb-3 ml-4"><strong>Оценки</strong></h4>
+            { movie_ratings.length>0 && movie_ratings.map((row) => (
+              <Box component="fieldset" mb={3} mt={3} ml={3} borderColor="transparent">
+                <Typography component="legend">{row?.rating.name}</Typography>
+                <Rating name="customized-10" defaultValue={row.mark} max={10} size="large" />
+              </Box>
+              ))
+            }
+          </Card.Header>
         </div>
+
+        
       </Container>
       );
 }

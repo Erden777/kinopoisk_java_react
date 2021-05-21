@@ -1,173 +1,180 @@
-import React from 'react';
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
+import React, { useState, useEffect, useContext } from "react";
+import { AuthContext, UserDataContext } from "../../App";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link
+} from "react-router-dom";
 
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import {Card} from 'react-bootstrap'
+import {useCookies} from 'react-cookie';
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import { Container, Form, Button } from "react-bootstrap";
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-const useStyles = makeStyles((theme) => ({
-  paper: {
-    marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-  },
-  avatar: {
-    margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
-  },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-  submit: {
-    margin: theme.spacing(3, 0, 2),
-  },
-}));
 
-export default function Profile() {
-  const classes = useStyles();
+export default function Profile(props){
+    const {cookieJWT} =  useContext(AuthContext);
+    const {userData, setuserData} = useContext(UserDataContext)
+    const [full_name, setfull_name] = useState("");
+    const [email , setemail] = useState("");
+    const [password, setpassword] = useState("");
+    const [repassword, setrepassword] = useState("");
+    const [oldpassword, setoldpassword] = useState("");
+    useEffect(() => {
+        test()
+    }, []);
 
-  return (
-        <div className="row">
-            <div className="col-md-4">
-            <CssBaseline />
-            <Card style={{ width: '18rem' }}  className={classes.paper}>
-                <Card.Img style={{height:200, width:200, marginTop:"20px"}} variant="top" src="https://i.pinimg.com/originals/51/f6/fb/51f6fb256629fc755b8870c801092942.png" />
-                <Card.Body>
-                    <Card.Title>Almaty IITU</Card.Title>
-                    <Card.Text>
-                   
-                    </Card.Text>
-                    <Button variant="primary">Updata image</Button>
-                </Card.Body>
-            </Card>
-            </div>
-            <div className="col-md-8">
-            <CssBaseline />
-            <h3 style={{marginTop:"60px"}}>Update profile</h3>
-            <div >
-                <form className={classes.form} noValidate>
-                <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="email"
-                    name="email"
-                    value="almaty@gmail.com"
-                    autoComplete="email"
-                    autoFocus
-                    aria-readonly
-                />
-                <hr></hr>
-                <h4 style={{marginTop:"30px"}}>Update Fullname</h4>
-                <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    id="text"
-                    name="fullname"
-                    value="Almaty IITU"
-                    autoComplete="text"
-                    autoFocus
-                />
-                <TextField
-                    id="date"
-                    variant="outlined"
-                    margin="normal"
-                    fullWidth
-                    label="Birthday"
-                    type="date"
-                    defaultValue="2017-05-24"
-                    className={classes.textField}
-                    InputLabelProps={{
-                    shrink: true,
-                    }}
-                />
-                
-                <Button
-                    type="submit"
-                    align="left"
-                    variant="contained"
-                    color="primary"
-                    className={classes.submit}
-                >
-                    Update
-                </Button>
+    const handlepasswordChange = event =>{
+        setpassword(event.target.value);
+    }
+    const handlerepasswordChange = event =>{
+        setrepassword(event.target.value);
+    }
+    const handleoldpasswordChange = event =>{
+        setoldpassword(event.target.value);
+    }
 
-                <h4 style={{marginTop:"60px"}}>Update Password</h4>
-                <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    name="password"
-                    label="Password"
-                    type="password"
-                    id="password"
-                    autoComplete="current-password"
-                />
-                <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth
-                    name="re-password"
-                    label="Re-Password"
-                    type="password"
-                    id="password"
-                    autoComplete="current-password"
-                />
-                <TextField
-                    variant="outlined"
-                    margin="normal"
-                    required
-                    fullWidth 
-                    name="new-password"
-                    label="New Password"
-                    type="password"
-                    id="password"
-                    autoComplete="current-password"
-                />
-            
-                <Button
-                    type="submit"
-                    variant="contained"
-                    color="primary"
-                    className={classes.submit}
-                >
-                    Update password
-                </Button>
-                
-                </form>
-            </div>
-            </div>
+    const handlefullnameChange = event =>{
+        setfull_name(event.target.value);
+    }
+
+    const handleSubmit = event =>{
+
+        const inputData = {email, full_name};
+            update_fullname(inputData);
+       
+        event.preventDefault();
+    }
+
+    const handlePasswordSubmit =event =>{
+        const inputData = {email, full_name, password, oldpassword};
+        if (password===repassword){
+            update_password(inputData);
+        }else{
+            alert("repassword error");
+        }
+        event.preventDefault();
+    }
+
+    async function update_password(inputData){
+
+        const bearer = "Bearer "+cookieJWT['jwt'].jwtToken;
+
+        const response = await fetch("http://localhost:8000/api/updatepassword", {
+            method: "POST",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": bearer
+            },
+            redirect: "follow",
+            referrerPolicy: "no-referrer",
+            body: JSON.stringify(inputData)
+        });
+        if(response.status==200){
+            let res = await response.json();
+            console.log(res);
+            setuserData(res);
+            setpassword("");
+            setoldpassword("");
+            setrepassword("");
+        } 
+    }
+
+
+    async function update_fullname(inputData){
+        const bearer = "Bearer "+cookieJWT['jwt'].jwtToken;
+
+        const response = await fetch("http://localhost:8000/api/updatefullname", {
+            method: "POST",
+            mode: "cors",
+            cache: "no-cache",
+            credentials: "same-origin",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": bearer
+            },
+            redirect: "follow",
+            referrerPolicy: "no-referrer",
+            body: JSON.stringify(inputData)
+        });
+        if(response.status==200){
+            let res = await response.json();
+            setuserData(res);
+            setfull_name(res['full_name']);
+        } 
+    }
+
+    async function test(){   
+        const bearer = "Bearer "+cookieJWT['jwt'].jwtToken;
+        const response = await fetch("http://localhost:8000/api/profile", {
+            method:'GET',
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": bearer
+            }
+        });
+        if(response.status==200){
+            let res = await response.json();
+            console.log(res);
+            setuserData(res);
+            setfull_name(res['full_name']);
+            setemail(res['email']);
+        }    
+    }
+
+    return (
+        <>
+        <div className="container">
+            <div className="row">
+                <div className="col-md-6 offset-3">
+                    <h4 className="my-4">Update Profile Data</h4>
+                  <Form onSubmit={handleSubmit}>
+                      <Form.Group controlId="formBasicEmail">
+                          <Form.Label>Email address</Form.Label>
+                          <Form.Control type="email" placeholder="Enter email" value={userData['email']} readOnly />
+                          <Form.Text className="text-muted">
+                          Enter your correct email address
+                          </Form.Text>
+                      </Form.Group>
+
+                      <Form.Group controlId="formBasicEmail">
+                          <Form.Label>Full name</Form.Label>
+                          <Form.Control type="text" onChange={handlefullnameChange} name="full_name" placeholder="Full name" value={full_name} />
+                      </Form.Group>
+                      
+                      <Button variant="success" className="btn btn-md success float-right" type="submit">
+                          Update profile
+                      </Button>
+                      </Form>
+                  </div>
+
+                  <div className="col-md-6 offset-3">
+                    <h4 className="my-4">Update password</h4>
+                  <Form onSubmit={handlePasswordSubmit}>
+                        <Form.Group controlId="formBasicPassword">
+                          <Form.Label>Old Password</Form.Label>
+                          <Form.Control name="oldpassword" value={oldpassword} onChange={handleoldpasswordChange} type="password" placeholder="Old Password" />
+                        </Form.Group>
+                      <Form.Group controlId="formBasicPassword">
+                          <Form.Label>New Password</Form.Label>
+                          <Form.Control type="password" placeholder="Password" name="password" value={password} onChange={handlepasswordChange} />
+                      </Form.Group>
+                      <Form.Group controlId="formBasicPassword">
+                          <Form.Label>Repeat Password</Form.Label>
+                          <Form.Control type="password" placeholder="Repeat Password" name="repassword" value={repassword} onChange={handlerepasswordChange} />
+                      </Form.Group>
+
+                      <Button variant="success" className="btn btn-md success float-right" type="submit">
+                          Update password
+                      </Button>
+                      </Form>
+                  </div>
+              </div>
         </div>
-      
-  );
+      </>
+      );
 }

@@ -14,7 +14,7 @@ import Footer from './Components/Footer/Footer';
 import Profile from './Components/Profile/Profile'
 import { useCookies } from "react-cookie";
 import MovieDetails from './Components/Main/MovieDetails';
-
+import MovieList from './Components/Main/MovieList';
 
 export const AuthContext = createContext();
 export const UserDataContext = createContext();
@@ -22,6 +22,7 @@ export const UserDataContext = createContext();
 function App() {
   const [cookieJWT, setCookieJWT, removeCookieJWT] = useCookies(['jwt']);
   const [userData, setuserData] = useState([]);
+  const [search_data, setSearch_data] = useState([])
   return (
     <AuthContext.Provider value={{cookieJWT, setCookieJWT, removeCookieJWT}}>
     <UserDataContext.Provider value={{userData, setuserData}}>
@@ -71,9 +72,11 @@ function App() {
 
         <Switch>
             <Route exact path="/">
-            <Header  />
+            <Header  setSearch_data={setSearch_data}
+                      search_data={search_data}/>
                <Container style={{minHeight:"85vh"}}>
-                <Main />
+                <Main setSearch_data={setSearch_data}
+                      search_data={search_data}/>
                 </Container>
               </Route>
 
@@ -83,6 +86,15 @@ function App() {
                 <MovieDetails />
                 </Container>
               </Route>
+
+              <Route exact path="/movie/genre/:GenreId">
+            <Header  />
+               <Container style={{minHeight:"85vh"}}>
+                <MovieList />
+                </Container>
+              </Route>
+
+              
 
               <Route exact path="/login">
               <Header />
